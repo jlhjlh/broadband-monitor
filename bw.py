@@ -16,6 +16,7 @@ print("""
 ******************************************
 Running the Speedtest script
 ******************************************""")
+
 # run the speedtest script to get info
 response = subprocess.Popen(
     "speedtest-cli --simple",
@@ -39,11 +40,8 @@ print("Ping: {}ms, Download: {} mbit/s, Upload: {} mbit/s \n\n".format(ping, dow
 # which has the content of the file
 ############################################################
 metadata, fileobject = dbx.files_download("/bw.csv")
-
 content = fileobject.content.decode()
-
 date, time = time.strftime('%m/%d/%y'), time.strftime('%H:%M')
-
 content = content + "\n" + date + "," + time + "," + ping + "," + download + "," + upload
 
 f = content.encode()
