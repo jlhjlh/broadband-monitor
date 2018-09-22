@@ -25,13 +25,14 @@ response = subprocess.Popen(
     stdout=subprocess.PIPE).stdout.read()
 
 # process the response so we just get the numbers
+print(response)
 response = response.splitlines()
 ping = response[0].replace("Ping: ", "").replace(" ms", "")
 download = response[1].replace("Download: ", "").replace(" Mbit/s", "")
 upload = response[2].replace("Upload: ", "").replace(" Mbit/s", "")
 
 
-print("Ping: {}ms, Download: {} mbit/s, Upload: {} mbit/s \n\n".format(ping, download, upload))
+#print("Ping: {}ms, Download: {} mbit/s, Upload: {} mbit/s \n\n".format(ping, download, upload))
 
 ############################################################
 # download the csv file from dropbox.
