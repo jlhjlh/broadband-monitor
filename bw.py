@@ -37,13 +37,13 @@ print("Ping: {}ms, Download: {} mbit/s, Upload: {} mbit/s \n\n".format(ping, dow
 # download the csv file from dropbox.
 # it returns a tuple with two entries.
 # the first entry is metadata and the second is the fileobject
-# which has the content of the file
+# which has the content of the file in bytes
 ############################################################
 metadata, fileobject = dbx.files_download("/bw.csv")
 content = fileobject.content.decode()
-date, time = time.strftime('%m/%d/%y'), time.strftime('%H:%M')
-content = content + "\n" + date + "," + time + "," + ping + "," + download + "," + upload
+date, time = time.strftime("%m/%d/%y"), time.strftime("%H:%M")
 
+content = content + "\n" + date + "," + time + "," + ping + "," + download + "," + upload
 f = content.encode()
 
 dbx.files_upload(f, "/bw.csv", mode=dropbox.files.WriteMode("overwrite"))
