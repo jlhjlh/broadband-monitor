@@ -1,14 +1,32 @@
 import dropbox
 from dotenv import load_dotenv
 import os
+import subprocess
+import re
+import time
 
+# load .env vars which contains my token
 load_dotenv()
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 
+# create the dbox object for read/writing files
 dbx = dropbox.Dropbox(ACCESS_TOKEN)
 
+# run the speedtest script to get info
+response = subprocess.Popen(
+    "speedtest-cli --simple",
+    shell=True,
+    stdout=subprocess.PIPE).stdout.read()
+
+# process the response so we just get the numbers
+response = response.splitlines()
+ping = response[0].replace("Ping: ", "").replace(" ms", "")
+download = response[1].replace("Download: ", "").replace(" Mbit/s", "")
+upload = response[2].replace("Upload: ", "").replace(" Mbit/s", "")
+
 ##############################
-# returns a tuple with two entries.
+# download the csv file from dropbox.
+# it returns a tuple with two entries.
 # the first entry is metadata and the second is the fileobject
 # which has the content of the file
 ##############################
@@ -16,9 +34,9 @@ metadata, fileobject = dbx.files_download("/bw.csv")
 
 content = fileobject.content.decode()
 
-content = content + "\n" + "05/28/18,11:18,47.943,40.93,2.33"
+date, time = time.strftime('%m/%d/%y'), time.strftime('%H:%M')
 
-print(content)
+content = content + "\n" + date + "," + time + "," + ping + "," + download + "," + upload
 
 f = content.encode()
 
