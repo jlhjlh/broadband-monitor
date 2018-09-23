@@ -20,7 +20,7 @@ def get_speed():
     response = json.loads(response)
     ping, download, upload, server = response["ping"], response["download"], response["upload"], response["server"]["url"]
 
-    print("Ping: {}ms, Download: {:,} mbit/s, Upload: {:,} mbit/s, Server: {} \n\n".format(ping, download, upload, server))
+    print(f"Ping: {ping}ms, Download: {download / 8000000:,} mb/s, Upload: {upload / 8000000:,} mb/s, Server: {server} \n\n")
 
     return(int(ping), download, upload, server)
 
@@ -56,8 +56,8 @@ DROPBOX_TOKEN = os.getenv("DROPBOX_TOKEN")
 PUSHOVER_USER_TOKEN = os.getenv("PUSHOVER_USER_TOKEN")
 PUSHOVER_API_TOKEN = os.getenv("PUSHOVER_API_TOKEN")
 
-max_ping = 2000  # if ping in ms is over this that's bad
-secs_before_retry = 300  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
+max_ping = 18  # if ping in ms is over this that's bad
+secs_before_retry = 5  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
 
 
 print("""
@@ -76,18 +76,18 @@ push_msg_sent = False  # default value for the initial push message
 
 # this runs if the ping is above the setting
 while ping > max_ping:
-    print("Ping is greater than {}".format(max_ping))
+    print(f"Ping is greater than {max_ping}")
     time.sleep(secs_before_retry)  # wait before re-trying to see if the connection is better
     ping, download, upload, server = get_speed()  # try the broadband test again
 
     if push_msg_sent is False:
-        push_msg = "Ping: {}ms, Download: {:,} mbit/s, Upload: {:,} mbit/s, Server: {} \n\n".format(ping, download, upload, server)
+        push_msg = f"Ping: {ping}ms, Download: {download / 8000000:,} mb/s, Upload: {upload / 8000000:,} mb/s, Server: {server} \n\n"
         send_push_message(push_msg, "Slow broadband alert!")
         push_msg_sent = True
 
     # once the ping is below our threshold send a notification saying everything is good.
     if ping <= max_ping:
-        send_push_message("Ping is now: {}".format(ping), "We're back to normal speed!")
+        send_push_message(f"Ping is now: {ping}", "We're back to normal speed!")
 
     write_to_csv(ping, download, upload, server)  # write the results to csv
 
