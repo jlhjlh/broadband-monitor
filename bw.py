@@ -27,9 +27,6 @@ def get_speed():
 
 
 def write_to_csv(ping, download, upload, server):
-    # create the dbox object for read/writing files
-    dbx = dropbox.Dropbox(DROPBOX_TOKEN)  # this gets instantiated every time the function is called. is that right?
-
     # download the csv from dropbox. dbx returns a tuple. 
     # one for the meta data of the file and one of the file itself
     metadata, fileobject = dbx.files_download("/bw.csv")  
@@ -46,9 +43,7 @@ def write_to_csv(ping, download, upload, server):
 
 
 def send_push_message(msg, title):
-    push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # this gets instantiated every time the function is called. is that right?
     push.send_message(msg, title=title)
-
 
 
 ############################################### 
@@ -69,11 +64,11 @@ print("""
 ******************************************
 Running the Speedtest script
 ******************************************""")
-
+dbx = dropbox.Dropbox(DROPBOX_TOKEN)   # create the dbox object for read/writing files
+push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # create the pushover object
 
 # start the script by getting our speed!
-# get_speed() returns 4 separate vars
-ping, download, upload, server = get_speed()
+ping, download, upload, server = get_speed()  # get_speed() returns 4 separate vars
 
 write_to_csv(ping, download, upload, server)
 
@@ -92,7 +87,6 @@ while ping > max_ping:
 
     # once the ping is below our threshold send a notification saying everything is good.
     if ping <= max_ping:
-        print("hey the ping is low again and this ran!")
         send_push_message("Ping is now: {}".format(ping), "We're back to normal speed!")
 
     write_to_csv(ping, download, upload, server)  # write the results to csv
