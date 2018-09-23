@@ -28,7 +28,7 @@ def get_speed():
 
 def write_to_csv(ping, download, upload, server):
     # create the dbox object for read/writing files
-    dbx = dropbox.Dropbox(DROPBOX_TOKEN)  # this gets initialized every time the function is called. is that right?
+    dbx = dropbox.Dropbox(DROPBOX_TOKEN)  # this gets instantiated every time the function is called. is that right?
 
     # download the csv from dropbox. dbx returns a tuple. 
     # one for the meta data of the file and one of the file itself
@@ -46,9 +46,8 @@ def write_to_csv(ping, download, upload, server):
 
 
 def send_push_message(msg, title):
-    push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # this gets initialized every time the function is called. is that right?
+    push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # this gets instantiated every time the function is called. is that right?
     push.send_message(msg, title=title)
-
 
 
 
@@ -62,8 +61,8 @@ DROPBOX_TOKEN = os.getenv("DROPBOX_TOKEN")
 PUSHOVER_USER_TOKEN = os.getenv("PUSHOVER_USER_TOKEN")
 PUSHOVER_API_TOKEN = os.getenv("PUSHOVER_API_TOKEN")
 
-max_ping = 18  # if ping in ms is over this that's bad
-secs_before_retry = 5  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
+max_ping = 2000  # if ping in ms is over this that's bad
+secs_before_retry = 300  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
 
 
 print("""
@@ -83,7 +82,7 @@ push_msg_sent = False  # default value for the initial push message
 # this runs if the ping is above the setting
 while ping > max_ping:
     print("Ping is greater than {}".format(max_ping))
-    time.sleep(secs_before_retry)
+    time.sleep(secs_before_retry)  # wait before re-trying to see if the connection is better
     ping, download, upload, server = get_speed()  # try the broadband test again
 
     if push_msg_sent is False:
