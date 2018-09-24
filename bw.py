@@ -25,21 +25,18 @@ def get_speed():
     return(int(ping), download, upload, server)
 
 
-
 def write_to_csv(ping, download, upload, server):
     # download the csv from dropbox. dbx returns a tuple.
-    # one for the meta data of the file and one of the file itself
-    metadata, fileobject = dbx.files_download("/bw.csv")
+    metadata, fileobject = dbx.files_download("/bw.csv")  # one for the meta data of the file and one of the file itself
 
     content = fileobject.content.decode()  # open the content of the fileobject
     todays_date, current_time = time.strftime("%m/%d/%y"), time.strftime("%H:%M")  # get todays date/time
-    
+
     content = content + "\n" + str(todays_date) + "," + str(current_time) + "," + \
                         str(ping) + "," + str(download) + "," + str(upload) + "," + str(server)  # write the new line
     f = content.encode()  # encode it back to bytes
 
     dbx.files_upload(f, "/bw.csv", mode=dropbox.files.WriteMode("overwrite"))  # upload it back to dropbox
-
 
 
 def send_push_message(msg, title):
