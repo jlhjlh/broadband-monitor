@@ -56,8 +56,8 @@ DROPBOX_TOKEN = os.getenv("DROPBOX_TOKEN")
 PUSHOVER_USER_TOKEN = os.getenv("PUSHOVER_USER_TOKEN")
 PUSHOVER_API_TOKEN = os.getenv("PUSHOVER_API_TOKEN")
 
-max_ping = 18  # if ping in ms is over this that's bad
-secs_before_retry = 5  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
+max_ping = 1000  # if ping in ms is over this that's bad
+secs_before_retry = 90  # number of seconds to wait before testing bandwidth again if it is greater than max_ping
 
 
 print("""
