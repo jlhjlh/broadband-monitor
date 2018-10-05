@@ -26,6 +26,7 @@ def get_speed():
 
 
 def write_to_csv(ping, download, upload, server):
+    dbx = dropbox.Dropbox(DROPBOX_TOKEN)   # create the dbox object for read/writing files
     # download the csv from dropbox. dbx returns a tuple.
     metadata, fileobject = dbx.files_download("/bw.csv")  # one for the meta data of the file and one of the file itself
 
@@ -40,6 +41,7 @@ def write_to_csv(ping, download, upload, server):
 
 
 def send_push_message(msg, title):
+    push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # create the pushover object
     push.send_message(msg, title=title)
 
 
@@ -61,9 +63,6 @@ if __name__ == "__main__":
     ******************************************
     Running the Speedtest script
     ******************************************""")
-    dbx = dropbox.Dropbox(DROPBOX_TOKEN)   # create the dbox object for read/writing files
-    push = Client(PUSHOVER_USER_TOKEN, api_token=PUSHOVER_API_TOKEN)  # create the pushover object
-
     # start the script by getting our speed!
     ping, download, upload, server = get_speed()  # get_speed() returns 4 separate vars
 
